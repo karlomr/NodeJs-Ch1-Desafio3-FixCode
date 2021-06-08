@@ -31,7 +31,6 @@ app.get("/repositories", (request, response) => {
 app.post("/repositories", (request, response) => {
   const { title, url, techs } = request.body;
 
-
   const repository = {
     id: uuid(),
     title,
@@ -45,26 +44,26 @@ app.post("/repositories", (request, response) => {
   return response.status(201).json(repository);
 });
 
+//app.put("/repositories/:id",  (request, response) => {
 app.put("/repositories/:id", findIndexRepository, (request, response) => {
   const { updatedRepository } = request.body;
-  const repositoryIndex = request;
 
-  const { repository } = repositories[repositoryIndex];
+  const repository  = repositories[repositoryIndex];
 
-  const repositoryUpdate = { 
-    id: repository.id,  
+  //in update user can alter id and likes then send to put
+  const repositoryUp = { 
     ...updatedRepository,
-    likes: repository.like,
+    likes: repository.like
   };
 
-  repositories[repositoryIndex] = repositoryUpdate;
+  repositories[repositoryIndex] = repositoryUp;
 
-  return response.json(repositoryUpdate);  
+  return response.json(repositoryUp);  
 
 });
 
 app.delete("/repositories/:id", findIndexRepository, (request, response) => {
-  const repositoryIndex  = request.body;
+  const { repositoryIndex }  = request;
 
   repositories.splice(repositoryIndex,1);
 
@@ -74,11 +73,11 @@ app.delete("/repositories/:id", findIndexRepository, (request, response) => {
 
 app.post("/repositories/:id/like",findIndexRepository, (request, response) => {
 
-  const repositoryIndex = request;
+  const { repositoryIndex } = request;
 
   repositories[repositoryIndex].likes++;
 
-  return response.json(repositories[repositoryIndex]);
+  return response.status(201).json(repositories[repositoryIndex]);
 });
 
 module.exports = app;

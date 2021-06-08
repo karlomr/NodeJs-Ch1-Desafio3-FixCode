@@ -44,21 +44,21 @@ app.post("/repositories", (request, response) => {
   return response.status(201).json(repository);
 });
 
-//app.put("/repositories/:id",  (request, response) => {
 app.put("/repositories/:id", findIndexRepository, (request, response) => {
-  const { updatedRepository } = request.body;
+  const { title, url, techs }   = request.body;
+
+  const { repositoryIndex }  = request;
 
   const repository  = repositories[repositoryIndex];
 
-  //in update user can alter id and likes then send to put
-  const repositoryUp = { 
-    ...updatedRepository,
-    likes: repository.like
-  };
+  repository.id = uuid();
+  repository.title =  title;  
+  repository.url = url;
+  repository.techs = techs;
 
-  repositories[repositoryIndex] = repositoryUp;
+  repositories[repositoryIndex] = repository;
 
-  return response.json(repositoryUp);  
+  return response.status(200).json(repository);  
 
 });
 
